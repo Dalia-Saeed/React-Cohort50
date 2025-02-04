@@ -1,5 +1,4 @@
-//import React from "react";
-import PropTypes from "prop-types"; // Import PropTypes
+import PropTypes from "prop-types";
 
 const ProductList = ({ products }) => {
   return (
@@ -10,7 +9,7 @@ const ProductList = ({ products }) => {
             <img
               src={product.image}
               className="product__image"
-              alt={`${product.title} image`} // Fixed the alt text for accessibility
+              alt={`${product.title} image`}
             />
             <span className="product__title">{product.title}</span>
           </div>
