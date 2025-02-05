@@ -1,33 +1,43 @@
+import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
+const ProductList = ({ products, loading, error }) => {
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
-const ProductList = ({ products }) => {
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
+
   return (
     <ul className="products">
       {products.map((product, i) => (
         <li key={i} className="products__item">
-          <div className="product">
-            <img
-              src={product.image}
-              className="product__image"
-              alt={`${product.title} image`}
-            />
-            <span className="product__title">{product.title}</span>
-          </div>
+          <Link to={`/product/${product.id}`} state={product.id}>
+            <div className="product">
+              <img
+                src={product.image}
+                className="product__image"
+                alt={`${product} image`}
+              ></img>
+              <span className="product__title">{product.title}</span>
+            </div>
+          </Link>
         </li>
       ))}
     </ul>
   );
 };
-
-// Define prop types for the component
 ProductList.propTypes = {
   products: PropTypes.arrayOf(
     PropTypes.shape({
-      id: PropTypes.number.isRequired,
-      title: PropTypes.string.isRequired,
+      id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
       image: PropTypes.string.isRequired,
+      title: PropTypes.string.isRequired,
     })
   ).isRequired,
+  loading: PropTypes.bool.isRequired,
+  error: PropTypes.string,
 };
 
 export default ProductList;

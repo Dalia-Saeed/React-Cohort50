@@ -1,53 +1,54 @@
 import { useState, useEffect } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "./App.css";
+
 import CategoryList from "./components/CategoryList";
 import ProductList from "./components/ProductList";
-import ProductDetail from "./components/ProductDetail";
 
 function App() {
+  const [selectedCategory, setSelectedCategory] = useState(null);
   const [categories, setCategories] = useState([]);
   const [products, setProducts] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // Fetch categories
   useEffect(() => {
     const fetchCategories = async () => {
-      setLoading(true);
       try {
         const response = await fetch(
           "https://fakestoreapi.com/products/categories"
         );
+        if (!response.ok) {
+          throw new Error("Error while fetching the categories.");
+        }
         const data = await response.json();
         setCategories(data);
-      } catch (err) {
-        console.error("Error fetching categories:", err);
-        setError("Failed to fetch categories");
-      } finally {
-        setLoading(false);
+      } catch (error) {
+        setError(error.message);
       }
     };
 
     fetchCategories();
   }, []);
 
-  // Fetch products based on selected category
   useEffect(() => {
     const fetchProducts = async () => {
-      setLoading(true);
       try {
-        const url = selectedCategory
-          ? `https://fakestoreapi.com/products/category/${selectedCategory}`
-          : "https://fakestoreapi.com/products";
+        setLoading(true);
+        let url = "https://fakestoreapi.com/products";
+
+        if (selectedCategory) {
+          url = `https://fakestoreapi.com/products/category/${selectedCategory}`;
+        }
 
         const response = await fetch(url);
+        if (!response.ok) {
+          throw new Error("Error while fetching the products.");
+        }
         const data = await response.json();
+
         setProducts(data);
-      } catch (err) {
-        console.error("Error fetching products:", err);
-        setError("Failed to fetch products");
+      } catch (error) {
+        setError(error.message);
       } finally {
         setLoading(false);
       }
@@ -57,30 +58,16 @@ function App() {
   }, [selectedCategory]);
 
   return (
-    <Router>
-      <div>
-        <h1>Products</h1>
-        {loading && <p>Loading...</p>}
-        {error && <p className="error">{error}</p>}
-
-        <Routes>
-          <Route
-            path="/"
-            element={
-              <>
-                <CategoryList
-                  categories={categories}
-                  selectedCategory={selectedCategory}
-                  setSelectedCategory={setSelectedCategory}
-                />
-                <ProductList products={products} />
-              </>
-            }
-          />
-          <Route path="/product/:id" element={<ProductDetail />} />
-        </Routes>
-      </div>
-    </Router>
+    <>
+      <h1>Products</h1>
+      <CategoryList
+        categories={categories}
+        selectedCategory={selectedCategory}
+        setSelectedCategory={setSelectedCategory}
+        error={error}
+      />
+      <ProductList products={products} loading={loading} error={error} />
+    </>
   );
 }
 
