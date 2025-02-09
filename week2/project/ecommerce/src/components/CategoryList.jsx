@@ -4,12 +4,7 @@ const CategoryList = ({
   categories,
   selectedCategory,
   setSelectedCategory,
-  error,
 }) => {
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
-
   const handleClick = (category) => {
     if (category === selectedCategory) {
       setSelectedCategory(null);
@@ -40,7 +35,6 @@ CategoryList.propTypes = {
   categories: PropTypes.arrayOf(PropTypes.string).isRequired,
   selectedCategory: PropTypes.string,
   setSelectedCategory: PropTypes.func.isRequired,
-  error: PropTypes.string,
 };
 
 export default CategoryList;

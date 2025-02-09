@@ -101,34 +101,3 @@ ul {
     background-color: #f9f9f9;
   }
 }
-
-.title_container {
-  align-items: center;
-  display: flex;
-  flex-direction: row;
-}
-
-.title_container__title {
-  margin-right: auto;
-}
-
-.product_details__information {
-  align-items: center;
-  display: flex;
-  flex-direction: column;
-}
-
-.product_details__information img {
-  max-height: 80vh;
-  order: 0;
-}
-
-.product_details__image {
-  min-width: 50%;
-}
-
-@media (min-width: 600px) {
-  .product_details__information {
-    flex-direction: row-reverse;
-  }
-}

@@ -1,61 +1,22 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import "./App.css";
-
+import categories from "./fake-data/all-categories";
+import products from "./fake-data/all-products";
 import CategoryList from "./components/CategoryList";
 import ProductList from "./components/ProductList";
 
 function App() {
   const [selectedCategory, setSelectedCategory] = useState(null);
-  const [categories, setCategories] = useState([]);
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
 
-  useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const response = await fetch(
-          "https://fakestoreapi.com/products/categories"
-        );
-        if (!response.ok) {
-          throw new Error("Error while fetching the categories.");
-        }
-        const data = await response.json();
-        setCategories(data);
-      } catch (error) {
-        setError(error.message);
-      }
-    };
+  let filteredProducts;
 
-    fetchCategories();
-  }, []);
-
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        setLoading(true);
-        let url = "https://fakestoreapi.com/products";
-
-        if (selectedCategory) {
-          url = `https://fakestoreapi.com/products/category/${selectedCategory}`;
-        }
-
-        const response = await fetch(url);
-        if (!response.ok) {
-          throw new Error("Error while fetching the products.");
-        }
-        const data = await response.json();
-
-        setProducts(data);
-      } catch (error) {
-        setError(error.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchProducts();
-  }, [selectedCategory]);
+  if (selectedCategory) {
+    filteredProducts = products.filter(
+      (product) => product.category === selectedCategory.slice(6)
+    );
+  } else {
+    filteredProducts = products;
+  }
 
   return (
     <>
@@ -64,9 +25,8 @@ function App() {
         categories={categories}
         selectedCategory={selectedCategory}
         setSelectedCategory={setSelectedCategory}
-        error={error}
       />
-      <ProductList products={products} loading={loading} error={error} />
+      <ProductList products={filteredProducts} />
     </>
   );
 }
